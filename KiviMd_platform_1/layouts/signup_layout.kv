@@ -1,0 +1,137 @@
+#:import utils kivy.utils
+
+
+<Screen_signup@Screen>:
+    Screen:
+        canvas.before:
+            Color:
+                rgb: utils.get_color_from_hex('#ececec')
+            Rectangle:
+                pos: self.pos
+                size: self.width, 100
+
+        canvas:
+            Color:
+                rgb: utils.get_color_from_hex('#ff9800')
+            Rectangle:
+                pos: self.x, self.height-50
+                size: self.width, 50
+
+
+        Label:
+            text: "Job-A-Student"
+            font_name: "Forte"
+            font_size: 50
+            pos_hint: {"center_x": .5, "center_y": .85}
+            color: utils.get_color_from_hex('#ff9800')
+
+        MDBoxLayout:
+            orientation: "vertical"
+            size_hint: 0.5, 0.5
+            pos_hint: {'y': .2, "x":.25}
+            padding: 20
+            spacing: 70
+
+
+
+
+
+            MDBoxLayout:
+                orientation: "horizontal"
+                size: self.width, self.height
+                padding: 10
+                spacing: 10
+
+
+                MDBoxLayout:
+                    orientation: "horizontal"
+                    size: self.width, self.height
+                    spacing: 40
+
+                    Label:
+                        text: "Student"
+                        color: utils.get_color_from_hex('#2b2b2a')
+                        size_hint: None,None
+                        size: "48dp", "48dp"
+                    MDCheckbox:
+                        size_hint: None,None
+                        size: "48dp", "48dp"
+                        group: "account_type"
+                        on_press:
+                            if self.active: root.set_type("student")
+                            if self.active == False: root.set_type(None)
+
+                MDBoxLayout:
+                    orientation: "horizontal"
+                    size: self.width, self.height
+                    spacing: 10
+
+                    Label:
+                        text: "Employer"
+                        color: utils.get_color_from_hex('#2b2b2a')
+                        size_hint: None,None
+                        size: "48dp", "48dp"
+
+                    MDCheckbox:
+                        size: "48dp", "48dp"
+                        size_hint: None,None
+                        group: "account_type"
+                        on_press:
+                            if self.active: root.set_type("student")
+                            if self.active == False: root.set_type(None)
+
+            MDBoxLayout:
+                orientation: "horizontal"
+                size: self.width, self.height
+
+                MDIcon:
+                    icon: "account-circle"
+                    icon_color: utils.get_color_from_hex('#2b2b2a')
+                    size_hint: "5dp", "68dp"
+                MDTextField:
+                    id: Username
+                    hint_text: "Username"
+                    helper_text: "This field is required*"
+                    helper_text_mode: "on_focus"
+                    text_color: utils.get_color_from_hex('#2b2b2a')
+                    write_tab: False
+                    size_hint: "48dp", "68dp"
+            MDBoxLayout:
+                orientation: "horizontal"
+                size: self.width, self.height
+
+                MDIcon:
+                    icon: "shield-lock"
+                    icon_color: utils.get_color_from_hex('#2b2b2a')
+                    size_hint: "5dp", "68dp"
+                MDTextField:
+                    id: Upassword
+                    hint_text: "Password"
+                    helper_text: "This field is required*"
+                    helper_text_mode: "on_focus"
+                    text_color: utils.get_color_from_hex('#2b2b2a')
+                    write_tab: False
+                    size_hint: "48dp", "68dp"
+                    password: True
+
+            HoverButton:
+                icon: "clipboard-account-outline"
+                text: "Sign-up"
+                pos_hint: {"center_x": .5, "center_y": .3}
+    #            font_size: 20
+                icon_color: utils.get_color_from_hex('#2b2b2a')
+                text_color: utils.get_color_from_hex('#2b2b2a')
+                md_bg_color: utils.get_color_from_hex('#ececec')
+                size_hint: 0.5, self.height
+                ripple_scale: 0
+                on_release: root.request_login(root.get_credentials()[0],root.get_credentials()[1], root.get_type())
+
+        MDFlatButton:
+            text: "Already have an account, login [color=#3273a8]here![/color]"
+            text_color: utils.get_color_from_hex('#2b2b2a')
+            font_size: 14
+            pos_hint: {"center_x": .5, "center_y": .2}
+            on_release: app.change_screen("screen_one")
+
+
+
