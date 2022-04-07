@@ -1,6 +1,6 @@
 #:import utils kivy.utils
-
-
+#:import HoverButton custom_classes
+#:import LoginButton custom_classes
 <Screen_login@Screen>:
 
     Screen:
@@ -79,7 +79,7 @@
                         size_hint: None,None
                         group: "account_type"
                         on_press:
-                            if self.active: root.set_type("student")
+                            if self.active: root.set_type("employer")
                             if self.active == False: root.set_type(None)
 
             MDBoxLayout:
@@ -113,11 +113,13 @@
                     helper_text: "This field is required*"
                     helper_text_mode: "on_focus"
                     text_color: utils.get_color_from_hex('#2b2b2a')
+                    multiline: False
+                    on_text_validate:  root.request_login(root.get_credentials()[0],root.get_credentials()[1], root.get_type())
                     write_tab: False
                     size_hint: "48dp", "68dp"
                     password: True
 
-            HoverButton:
+            LoginButton:
                 icon: "login-variant"
                 text: "Login"
                 pos_hint: {"center_x": .5, "center_y": .3}
@@ -127,14 +129,18 @@
                 md_bg_color: utils.get_color_from_hex('#ececec')
                 size_hint: 0.5, self.height
                 ripple_scale: 0
-                on_release: root.request_login(root.get_credentials()[0],root.get_credentials()[1], root.get_type())
+                on_release: self.login_animation(root.request_login(root.get_credentials()[0],root.get_credentials()[1], root.get_type()))
+
+
 
         MDFlatButton:
             text: "Dont have an account, Sign up [color=#3273a8]here![/color]"
             text_color: utils.get_color_from_hex('#2b2b2a')
             font_size: 14
             pos_hint: {"center_x": .5, "center_y": .2}
-            on_release: app.change_screen("screen_two")
+            on_release:
+                root.clear_fields()
+                app.change_screen("screen_two")
 
 
 

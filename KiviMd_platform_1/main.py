@@ -13,45 +13,13 @@ from kivy.lang import Builder
 from kivy.config import Config
 from kivy.utils import get_color_from_hex
 from functools import partial
+
 Config.set('input', 'mouse', 'mouse,multitouch_on_demand')
 
 
 
 
 
-
-
-
-
-
-
-
-class HoverButton(MDFillRoundFlatIconButton, HoverBehavior):
-
-    #stores the default icon to save for change back.
-    defaulticon = None
-    def on_enter(self, *args):
-        #when mouse hover overbutton switch bg color, and stores the default icon.
-        self.md_bg_color = get_color_from_hex('#ff9800')
-        #animates the button, by sizing up the x value
-        Animation(size_hint=(0.6, self.height), duration=1).start(self)
-        #saves default icon
-        self.defaulticon = self.icon
-    def on_leave(self, *args):
-        # when mouse hover overbutton switch bg color, and changes to the default icon.
-        self.md_bg_color = get_color_from_hex('#ececec')
-        # animates the button, by sizing down the x value
-        Animation(size_hint=(0.5, self.height), duration=1).start(self)
-        #changes to the default icon.
-        self.icon = self.defaulticon
-    def on_release(self):
-        #kills all animations on press
-        Animation.cancel_all(self)
-        #on press shrinks the button and change icon
-        Animation(size_hint=(0.4, self.height), duration=0.2).start(self)
-        self.icon = "check-decagram"
-        #sets color to green
-        self.md_bg_color = get_color_from_hex('#3fb55d')
 
 
 class Screen_login(Screen):
@@ -67,21 +35,26 @@ class Screen_login(Screen):
 
     def request_login(self, username, password, type):
         database = ["monkey", "word", "student"]
+
         if username == database[0] and password == database[1] and type == database[2]:
             return True
         else:
-            self.theme_cls.primary_palette = "Orange"
-            Mainapp.show_alert_box(Mainapp().root, "You did something wrong...")
+            self.clear_fields()
+            Mainapp.show_alert_box(Mainapp(), "You did something wrong...")
             return False
+    def clear_fields(self):
+        self.ids.Username.text = ""
+        self.ids.Upassword.text = ""
+
+
 
 
 
 
 class Screen_signup(Screen):
     type = None
+
     def get_credentials(self):
-        print(self.ids.Username.text)
-        print(self.ids.Upassword.text)
         return self.ids.Username.text, self.ids.Upassword.text
 
     def set_type(self, type):
@@ -90,13 +63,18 @@ class Screen_signup(Screen):
     def get_type(self):
         return self.type
 
-    def request_login(Self, username, password, type):
+    def request_login(self, username, password, type):
         database = ["monkey", "word", "student"]
         if username == database[0] and password == database[1] and type == database[2]:
             return True
         else:
+            self.clear_fields()
             Mainapp.show_alert_box(Mainapp(), "You did something wrong...")
             return False
+
+    def clear_fields(self):
+        self.ids.Username.text = ""
+        self.ids.Upassword.text = ""
 
 
 class Mainapp(MDApp):
