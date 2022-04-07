@@ -31,7 +31,7 @@ class HoverButton(MDFillRoundFlatIconButton, HoverBehavior,):
 
 
 
-class LoginButton(HoverButton):
+class LoginButton(HoverButton, MagicBehavior):
     def login_animation(self, boolean):
         # kills all animations on press
         Animation.cancel_all(self)
@@ -42,6 +42,7 @@ class LoginButton(HoverButton):
             # sets color to green
             self.md_bg_color = get_color_from_hex('#3bff8c')
         else:
+            self.wobble()
             self.icon = "alert-decagram"
             # sets color to green
             self.md_bg_color = get_color_from_hex('#ff583b')
