@@ -1,4 +1,5 @@
 from kivy.animation import Animation
+from kivy.core.audio import SoundLoader
 from kivymd.uix.behaviors import HoverBehavior, MagicBehavior
 from kivymd.uix.button import MDFillRoundFlatIconButton, MDRectangleFlatIconButton, MDFlatButton, MDRectangleFlatButton
 from kivy.utils import get_color_from_hex
@@ -43,6 +44,7 @@ class LoginButton(HoverButton, MagicBehavior):
             self.md_bg_color = get_color_from_hex('#3bff8c')
         else:
             self.wobble()
+
             self.icon = "alert-decagram"
             # sets color to green
             self.md_bg_color = get_color_from_hex('#ff583b')

@@ -4,7 +4,8 @@
     <list default="true" id="3f3e7451-cd29-48d8-b4ac-31db97fc3899" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/KiviMd_platform_1/custom_classes.py" beforeDir="false" afterPath="$PROJECT_DIR$/KiviMd_platform_1/custom_classes.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/KiviMd_platform_1/test.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/KiviMd_platform_1/layouts/signup_layout.kv" beforeDir="false" afterPath="$PROJECT_DIR$/KiviMd_platform_1/layouts/signup_layout.kv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/KiviMd_platform_1/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/KiviMd_platform_1/main.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -158,5 +159,6 @@
         </entry>
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
 </project>

@@ -1,5 +1,6 @@
 from kivy.animation import Animation
 from kivy.clock import Clock
+from kivy.core.audio import SoundLoader
 from kivy.core.window import Window
 from kivy.uix.button import Button
 from kivy.uix.widget import Widget
@@ -40,6 +41,8 @@ class Screen_login(Screen):
             return True
         else:
             self.clear_fields()
+            sound = SoundLoader.load("sfx/Error.mp3")
+            sound.play()
             Mainapp.show_alert_box(Mainapp(), "You did something wrong...")
             return False
     def clear_fields(self):
@@ -55,7 +58,7 @@ class Screen_signup(Screen):
     type = None
 
     def get_credentials(self):
-        return self.ids.Username.text, self.ids.Upassword.text
+        return self.ids.Username.text, self.ids.Upassword.text, self.ids.Urepeat.text
 
     def set_type(self, type):
         self.type = type
@@ -63,18 +66,45 @@ class Screen_signup(Screen):
     def get_type(self):
         return self.type
 
-    def request_login(self, username, password, type):
-        database = ["monkey", "word", "student"]
-        if username == database[0] and password == database[1] and type == database[2]:
-            return True
-        else:
+    def request_signup(self, username, password,rpassword,  type):
+        sound = SoundLoader.load("sfx/Error.mp3")
+
+        if type is None:
+            sound.play()
+            Mainapp.show_alert_box(Mainapp(), "You need to pick either employee or student")
             self.clear_fields()
-            Mainapp.show_alert_box(Mainapp(), "You did something wrong...")
             return False
 
+        elif username == "" or password == "":
+            sound.play()
+            Mainapp.show_alert_box(Mainapp(), "Fields cant be empty")
+            self.clear_fields()
+            return False
+        elif self.password_length(password) > 12:
+            sound.play()
+            self.clear_password_fields()
+            Mainapp.show_alert_box(Mainapp(), "Password's are longer than 12 characters")
+            return False
+        elif password != rpassword:
+            sound.play()
+            self.clear_password_fields()
+            Mainapp.show_alert_box(Mainapp(), "Password's are not the same")
+            return False
+        else:
+            print("success")
+            newlist = [username, password, type]
+            return newlist
+
+    def password_length(self, password):
+        char_lsit = [char for char in password]
+        return len(char_lsit)
+    def clear_password_fields(self):
+        self.ids.Upassword.text = ""
+        self.ids.Urepeat.text = ""
     def clear_fields(self):
         self.ids.Username.text = ""
         self.ids.Upassword.text = ""
+        self.ids.Urepeat.text = ""
 
 
 class Mainapp(MDApp):
