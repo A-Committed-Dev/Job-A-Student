@@ -1,6 +1,10 @@
 #:import utils kivy.utils
 #:import HoverButton custom_classes
 #:import LoginButton custom_classes
+
+
+# this is the class for the login screen which is paired with
+# the Screen_login class in the main.py file
 <Screen_login@Screen>:
 
     Screen:
@@ -139,8 +143,10 @@
             font_size: 14
             pos_hint: {"center_x": .5, "center_y": .2}
             on_release:
+                #root refers to the screen class
                 root.clear_fields()
-                app.change_screen("screen_two")
+                #root refers to the main class
+                app.change_screen("signup_screen")
 
 
 

@@ -1,6 +1,8 @@
 #:import utils kivy.utils
 #:import LoginButton custom_classes
 
+# this is the class for the signup screen which is paired with
+# the Screen_signup class in the main.py file
 <Screen_signup@Screen>:
     Screen:
         canvas.before:
@@ -149,7 +151,7 @@
             pos_hint: {"center_x": .5, "center_y": .2}
             on_release:
                 root.clear_fields()
-                app.change_screen("screen_one")
+                app.change_screen("login_screen")
 
 
 
