@@ -47,10 +47,12 @@ class Screen_login(Screen):
     # TO DO: ADD DATABASE FOR LOGIN MANGEMENT.
     def request_login(self, username, password, type):
         # this imtates a sql database at the moment
-        database = ["monkey", "word", "student"]
+        database = ["1", "1", "student"]
 
         # checks if all credentials match database and returns true
         if username == database[0] and password == database[1] and type == database[2]:
+            if type == "student":
+                Mainapp().change_screen(name="student_main")
             return True
         else:
             # if not
@@ -167,6 +169,9 @@ class Screen_signup(Screen):
         self.ids.Urepeat.text = ""
 
 
+class Screen_student(Screen):
+    type = "student"
+
 
 # this is the main class for the gui
 # this is where we build the gui, sets
@@ -187,10 +192,12 @@ class Mainapp(MDApp):
         # loads the .kv files
         Builder.load_file("layouts/login_layout.kv")
         Builder.load_file("layouts/signup_layout.kv")
+        Builder.load_file("layouts/student_main.kv")
 
         # adds screens to the screen manager.
         self.sm.add_widget(Screen_login(name="login_screen"))
         self.sm.add_widget(Screen_signup(name="signup_screen"))
+        self.sm.add_widget(Screen_student(name="student_main"))
 
         # sets the start up screen
         self.sm.current = "login_screen"

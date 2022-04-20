@@ -1,0 +1,26 @@
+#:import utils kivy.utils
+
+<Screen_student@Screen>:
+    Screen:
+        canvas.before:
+            Color:
+                rgb: utils.get_color_from_hex('#ececec')
+            Rectangle:
+                pos: self.pos
+                size: self.width, 100
+
+        canvas:
+            Color:
+                rgb: utils.get_color_from_hex('#ff9800')
+            Rectangle:
+                pos: self.x, self.height-50
+                size: self.width, 50
+        Label:
+            text: "Studentersiden"
+            font_name: "Forte"
+            font_size: 50
+            pos_hint: {"center_x": 0.5, "center_y": 0.96}
+            color: utils.get_color_from_hex('#ececec')
+
+
+

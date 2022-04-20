@@ -133,7 +133,9 @@
                 md_bg_color: utils.get_color_from_hex('#ececec')
                 size_hint: 0.5, self.height
                 ripple_scale: 0
-                on_release: self.login_animation(root.request_login(root.get_credentials()[0],root.get_credentials()[1], root.get_type()))
+                on_release:
+                    self.login_animation(root.request_login(root.get_credentials()[0],root.get_credentials()[1], root.get_type()))
+
 
 
 
