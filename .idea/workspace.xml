@@ -3,10 +3,10 @@
   <component name="ChangeListManager">
     <list default="true" id="3f3e7451-cd29-48d8-b4ac-31db97fc3899" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/KiviMd_platform_1/custom_classes.py" beforeDir="false" afterPath="$PROJECT_DIR$/KiviMd_platform_1/custom_classes.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/KiviMd_platform_1/layouts/login_layout.kv" beforeDir="false" afterPath="$PROJECT_DIR$/KiviMd_platform_1/layouts/login_layout.kv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/KiviMd_platform_1/layouts/screen_manager.kv" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/KiviMd_platform_1/layouts/signup_layout.kv" beforeDir="false" afterPath="$PROJECT_DIR$/KiviMd_platform_1/layouts/signup_layout.kv" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/KiviMd_platform_1/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/KiviMd_platform_1/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/KiviMd_platform_1/test2.py" beforeDir="false" afterPath="$PROJECT_DIR$/KiviMd_platform_1/test2.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -132,8 +132,8 @@
       <list>
         <item itemvalue="Python.main" />
         <item itemvalue="Python.test2" />
-        <item itemvalue="Python.test" />
         <item itemvalue="Python.icon" />
+        <item itemvalue="Python.test" />
       </list>
     </recent_temporary>
   </component>
@@ -147,6 +147,11 @@
       <updated>1649279648054</updated>
       <workItem from="1649279650137" duration="9507000" />
       <workItem from="1649439045684" duration="3719000" />
+      <workItem from="1649443144679" duration="32000" />
+      <workItem from="1649857771830" duration="1223000" />
+      <workItem from="1650020740900" duration="46000" />
+      <workItem from="1651218562835" duration="762000" />
+      <workItem from="1651219340642" duration="5868000" />
     </task>
     <servers />
   </component>
@@ -166,6 +171,8 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/Job_A_Student$main.coverage" NAME="main Coverage Results" MODIFIED="1649442360237" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/KiviMd_platform_1" />
+    <SUITE FILE_PATH="coverage/Job_A_Student$test2.coverage" NAME="test2 Coverage Results" MODIFIED="1651225077701" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/KiviMd_platform_1" />
+    <SUITE FILE_PATH="coverage/Job_A_Student$main.coverage" NAME="main Coverage Results" MODIFIED="1651222268992" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/KiviMd_platform_1" />
+    <SUITE FILE_PATH="coverage/Job_A_Student$icon.coverage" NAME="icon Coverage Results" MODIFIED="1651220053435" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/KiviMd_platform_1" />
   </component>
 </project>

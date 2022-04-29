@@ -1,0 +1,24 @@
+
+<Screen_jobs@Screen>:
+    Screen:
+        MDBoxLayout:
+            orientation:
+            ScrollView:
+                MDList:
+
+                    OneLineAvatarIconListItem:
+                        on_release: print("Click!")
+
+                        IconLeftWidget:
+                            icon: "github"
+
+                    OneLineAvatarIconListItem:
+                        on_release: print("Click 2!")
+
+                        IconLeftWidget:
+                            icon: "gitlab"
+            Screen:
+                MDFlatButton:
+                    text: "HELLO WORLD"
+                    size_hint: 1, 1
+                    md_bg_color: 1, 0, 0
