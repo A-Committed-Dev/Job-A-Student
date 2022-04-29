@@ -5,7 +5,6 @@
             orientation:
             ScrollView:
                 MDList:
-
                     OneLineAvatarIconListItem:
                         on_release: print("Click!")
 
@@ -17,8 +16,14 @@
 
                         IconLeftWidget:
                             icon: "gitlab"
-            Screen:
-                MDFlatButton:
-                    text: "HELLO WORLD"
-                    size_hint: 1, 1
-                    md_bg_color: 1, 0, 0
+
+            Splitter:
+                sizable_from: 'left'
+                max_size: self.parent.width/1.5
+                min_size: self.parent.width/4
+                strip_size: 7.5
+                Screen:
+                    MDFlatButton:
+                        text: "HELLO WORLD"
+                        size_hint: 1, 1
+                        md_bg_color: 1, 0, 0
