@@ -1,29 +1,73 @@
+#:import utils kivy.utils
+#:import LoginButton custom_classes
+<CardItem>
+    size_hint_y: None
+    height: "86dp"
+    padding: "4dp"
+    radius: 12
+    elevation: 4
+    on_release: print("Click!")
+    FitImage:
+        source: "Untitled.png"
+        radius: root.radius
+        size_hint_x: None
+        width: root.height
+
+    MDBoxLayout:
+        orientation: "vertical"
+        adaptive_height: True
+        spacing: "6dp"
+        padding: "12dp", 0, 0, 0
+        pos_hint: {"center_y": .5}
+
+        MDLabel:
+            text: "Title text"
+            font_style: "H5"
+            bold: True
+            adaptive_height: True
+
+        MDLabel:
+            text: "Subtitle text"
+            theme_text_color: "Hint"
+            adaptive_height: True
+
+
 
 <Screen_jobs@Screen>:
     Screen:
         MDBoxLayout:
             orientation:
-            ScrollView:
-                MDList:
-                    OneLineAvatarIconListItem:
-                        on_release: print("Click!")
+            MDSliverAppbar:
+                background_color: get_color_from_hex("#ececec")
 
-                        IconLeftWidget:
-                            icon: "github"
 
-                    OneLineAvatarIconListItem:
-                        on_release: print("Click 2!")
+                MDSliverAppbarHeader:
 
-                        IconLeftWidget:
-                            icon: "gitlab"
+                    MDRelativeLayout:
+                        Label:
+                            text: "Job-A-Student"
+                            font_name: "Forte"
+                            font_size: 50
+                            color: utils.get_color_from_hex('#ff9800')
+
+                MDSliverAppbarContent:
+                    id: content
+                    orientation: "vertical"
+                    padding: "12dp"
+                    spacing: "12dp"
+                    adaptive_height: True
+
+
 
             Splitter:
                 sizable_from: 'left'
                 max_size: self.parent.width/1.5
                 min_size: self.parent.width/4
-                strip_size: 7.5
+                strip_size: 3
+
+
                 Screen:
                     MDFlatButton:
                         text: "HELLO WORLD"
                         size_hint: 1, 1
-                        md_bg_color: 1, 0, 0
+                        md_bg_color: get_color_from_hex("#ececec")

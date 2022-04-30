@@ -9,8 +9,12 @@ from kivymd.app import MDApp
 from kivymd.uix.behaviors import RoundedRectangularElevationBehavior
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.button import MDFillRoundFlatIconButton
+from kivymd.uix.card import MDCard
 from kivymd.uix.label import MDLabel
 from kivymd.uix.screen import MDScreen
+
+class CardItem(MDCard, RoundedRectangularElevationBehavior):
+    pass
 
 class Screen_jobs(Screen):
     pass
@@ -36,6 +40,10 @@ class Example(MDApp):
     def on_start(self):
         '''Creates application screens.'''
         self.root.ids.screen_manager.add_widget(Screen_jobs(name="job"))
+        for x in range(10):
+            self.root.ids.screen_manager.get_screen("job").ids.content.add_widget(CardItem())
+
+
         navigation_rail_items = self.root.ids.navigation_rail.get_items()[:]
         navigation_rail_items.reverse()
 
