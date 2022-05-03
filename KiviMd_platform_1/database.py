@@ -131,6 +131,10 @@ def get_from_awaiting(cursor_obj, user_name):
         cursor_obj.execute("""SELECT * FROM AWAITING WHERE jobid = ?""", (x[4],))
         return cursor_obj.fetchall()
 
+def get_from_awaiting_by_userid(cursor_obj, user_name):
+    cursor_obj.execute("""SELECT * FROM AWAITING WHERE userid = ?""", (user_name,))
+    return cursor_obj.fetchall()
+
 def delete_from_awaiting(cursor_obj, jobid):
     cursor_obj.execute("""DELETE FROM AWAITING WHERE jobid = ?""", (jobid,))
 
@@ -140,7 +144,14 @@ def insert_into_reviewed(cursor_obj, name ,jobname, status, user_name):
                   name, jobname, status, userid) VALUES 
                   (?,?,?,?)''', (name, jobname, status, user_name))
 
-#
+def get_allfrom_reviewed(cursor_obj):
+    cursor_obj.execute("""SELECT * FROM USER_REVIEWED""")
+    return cursor_obj.fetchall()
+
+def get_from_reviewed(cursor_obj, user_name):
+    cursor_obj.execute("""SELECT * FROM USER_REVIEWED WHERE userid = ?""", (user_name,))
+    return cursor_obj.fetchall()
+
 # v = establish_connection()
 # delete_from_awaiting(v[1], 1)
 # close_connection(v[0])

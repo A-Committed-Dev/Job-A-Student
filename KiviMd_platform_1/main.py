@@ -6,12 +6,18 @@ from kivy.clock import Clock
 from kivy.config import Config
 from kivy.core.window import Window
 from kivy.lang import Builder
+from kivy.metrics import dp, sp
 from kivy.properties import partial
 from kivy.uix.screenmanager import Screen, ScreenManager
 from kivymd.app import MDApp
 from kivymd.uix.behaviors import RoundedRectangularElevationBehavior
+from kivymd.uix.boxlayout import MDBoxLayout
+from kivymd.uix.button import MDIconButton
 from kivymd.uix.card import MDCard
+from kivymd.uix.datatables import MDDataTable
 from kivymd.uix.dialog import MDDialog
+from kivymd.uix.label import MDLabel
+from kivymd.uix.textfield import MDTextField
 
 from custom_classes import *
 from database import *
@@ -58,7 +64,7 @@ class CardItem(MDCard, RoundedRectangularElevationBehavior):
         if status == 1:
             delete_from_job(val[1], idd)
             Mainapp.show_alert_box(Mainapp(), "Accepted application")
-            
+
         if status == 0:
             Mainapp.show_alert_box(Mainapp(), "Denied application")
         # closes connection
@@ -122,14 +128,164 @@ class Screen_account(Screen):
         return len(char_lsit)
 
 class Screen_waiting_student(Screen):
-    pass
+    index = 0
+    dialog = None
+
+    def create_table(self):
+
+        # reads the database for account info and displays on gui
+        # opens database connection
+        val = establish_connection()
+        # save gets username
+        database = get_from_awaiting_by_userid(val[1], app.current_account)
+
+        new_database = []
+        for z in database:
+            database_jobs = get_from_jobs_by_jobid(val[1], z[4])
+
+            for x in database_jobs:
+                new_list = []
+                new_list.append(x[0])
+                new_list.append(x[3])
+                new_list.append(x[4])
+                new_list.append("Pending...")
+                new_database.append(new_list)
+
+
+
+
+        # closes connection
+        close_connection(val[0])
+
+
+        # Initialization of datatable
+        self.table = MDDataTable(
+            pos_hint={"center_y": 0.5, "center_x": 0.5},
+            size_hint=(0.95, 0.75),
+            check=False,
+            rows_num=1000,
+            use_pagination=False,
+            column_data=[
+                ("name", self.width / 20),
+                ("Job", self.width/20),
+                ("id", self.width / 20),
+                ("Status", self.width/20),
+            ],
+            row_data= new_database)
+
+        # Binds the method on_row_press to the datatable
+        self.table.bind(on_row_press=self.row_presses)
+
+        self.add_widget(self.table)
+
+    # Creates datatable when the screen is active
+    def on_enter(self):
+        self.create_table()
+
+    # Method that gets the instance of the row pressed
+    def row_presses(self, instance_table, instance_row):
+        selected_row_name = instance_row.text
+        print(len(self.table.row_data))
+        print(instance_row.index)
+        for x in range(0, )
+
+        # if instance_row.index == 0:
+        #     print(self.table.row_data[instance_row.index][2])
+        # else:
+        #     print(self.table.row_data[instance_row.index/2][2])
+
+
+
+        # Deletes the previous label that showed selected row
+        if len(self.children) > 2:
+            self.remove_widget(self.children[0])
+        else:
+            pass
+
+        # BoxLayout to house buttons and label
+        buttons = MDBoxLayout(
+            pos_hint={"center_x": 0.537, "center_y": 0.55},
+        )
+
+        # Delete button
+        buttons.add_widget(
+            MDIconButton(
+                icon="trash-can-outline",
+                on_release=lambda x: Mainapp.show_alert_box(Mainapp(), "Do you whish to delete?")
+            )
+        )
+
+
+
+        if instance_row.index == 0:
+            # "Selected: " label
+            buttons.add_widget(
+                MDLabel(
+                    text=f"Selected: {selected_row_name}",
+                    pos_hint={"center_y": 0.04}
+                )
+            )
+        self.add_widget(buttons)
+
+
+    def remove(self, selected_row):
+        pass
+
+
 class Screen_waiting_employer(Screen):
     def on_enter(self, *args):
         app.main_Screen.ids.screen_manager.get_screen("awaiting").ids.content_view.clear_widgets()
         app.main_Screen.ids.screen_manager.get_screen("awaiting").ids.content.clear_widgets()
         app.main_Screen.populate_awaiting()
+
+
 class Screen_reviewed(Screen):
-    pass
+    def create_table(self):
+        try:
+            # reads the database for account info and displays on gui
+            # opens database connection
+            val = establish_connection()
+            # save gets username
+            database = get_from_reviewed(val[1], app.current_account)
+            # closes connection
+            close_connection(val[0])
+            new_database = []
+            for x in database:
+                new_list = []
+                new_list.append(x[0])
+                new_list.append(x[1])
+                if x[2] == 1:
+                    new_list.append(("checkbox-marked-circle", [0, 100, 0, 1], "Accepted"))
+                if x[2] == 0:
+                    new_list.append(("close-circle", [50, 0, 0, 1], "Denied"))
+
+                new_database.append(new_list)
+                print(new_database)
+        except:
+            pass
+
+
+
+        # Initialization of datatable
+        self.table = MDDataTable(
+            pos_hint={"center_y": 0.5, "center_x": 0.5},
+            size_hint=(0.95, 0.75),
+            check=False,
+            rows_num=1000,
+            use_pagination=False,
+            column_data=[
+                ("name", self.width / 14),
+                ("Job", self.width/14),
+                ("Status", self.width/25),
+            ],
+            row_data=new_database
+        )
+
+        self.add_widget(self.table)
+
+    # Creates datatable when the screen is active
+    def on_enter(self):
+        self.create_table()
 
 class Screen_main(Screen):
 
