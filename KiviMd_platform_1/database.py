@@ -35,11 +35,10 @@ def create_tables(cursor_obj):
             ); """
 
     table3 = """ CREATE TABLE USER_REVIEWED(
+                name TEXT,
                 jobname TEXT,
                 Status INTEGER,
-                jobid INTEGER,
                 userid TEXT,
-                FOREIGN KEY(jobid) REFERENCES JOBS(jobid),
                 FOREIGN KEY(userid)REFERENCES LOGIN(user_name)
             ); """
     table4 = """ CREATE TABLE AWAITING(
@@ -100,6 +99,9 @@ def get_from_jobs(cursor_obj, user_name):
     cursor_obj.execute("""SELECT * FROM JOBS WHERE userid = ?""", (user_name,))
     return cursor_obj.fetchall()
 
+def get_from_jobs_by_jobid(cursor_obj, jobid):
+    cursor_obj.execute("""SELECT * FROM JOBS WHERE jobid = ?""", (jobid,))
+    return cursor_obj.fetchall()
 
 def get_allfrom_jobs(cursor_obj):
     cursor_obj.execute("""SELECT * FROM JOBS""")
@@ -110,18 +112,35 @@ def delete_from_job(cursor_obj, jobid):
 
 
 def insert_into_awaiting(cursor_obj, name, desc, img, jobname, jobid, user_name):
-    cursor_obj.execute('''INSERT INTO AWAITING(
-          employer_name, employer_desc, employer_image, jobname, jobid, userid) VALUES 
-          (?,?,?,?,?,?)''', (name, desc, img, jobname, jobid, user_name))
 
+    if len(get_from_awaiting_by_jobid(cursor_obj, jobid)) != 0:
+        if get_from_awaiting_by_jobid(cursor_obj, jobid)[0][4] == jobid:
+            print("monkey")
+            pass
+    else:
+        cursor_obj.execute('''INSERT INTO AWAITING(
+              student_name, student_desc, student_image, jobname, jobid, userid) VALUES 
+              (?,?,?,?,?,?)''', (name, desc, img, jobname, jobid, user_name))
+
+def get_from_awaiting_by_jobid(cursor_obj, jobid):
+    cursor_obj.execute("""SELECT * FROM AWAITING WHERE jobid = ?""", (jobid,))
+    return cursor_obj.fetchall()
 
 def get_from_awaiting(cursor_obj, user_name):
     for x in get_from_jobs(cursor_obj, user_name):
         cursor_obj.execute("""SELECT * FROM AWAITING WHERE jobid = ?""", (x[4],))
         return cursor_obj.fetchall()
 
+def delete_from_awaiting(cursor_obj, jobid):
+    cursor_obj.execute("""DELETE FROM AWAITING WHERE jobid = ?""", (jobid,))
 
+
+def insert_into_reviewed(cursor_obj, name ,jobname, status, user_name):
+    cursor_obj.execute('''INSERT INTO USER_REVIEWED(
+                  name, jobname, status, userid) VALUES 
+                  (?,?,?,?)''', (name, jobname, status, user_name))
+
+#
 # v = establish_connection()
-# x = get_allfrom_jobs(v[1])
-# print(x)
+# delete_from_awaiting(v[1], 1)
 # close_connection(v[0])

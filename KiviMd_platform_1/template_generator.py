@@ -42,7 +42,7 @@ def create_card_employer_jobs(title, subtitle, img, function, delete_function):
     """.format(function, image_string, title_string, subtitle_string, delete_function)
     return card
 
-def create_card_employer_awaiting(title, subtitle, img, function):
+def create_card_employer_awaiting(title, subtitle, img, function, approve_function, del_function):
     image_string = "'"+img+"'"
     title_string = "'"+title+"'"
     subtitle_string = "'"+subtitle+"'"
@@ -82,13 +82,15 @@ def create_card_employer_awaiting(title, subtitle, img, function):
     MDIconButton:
         id: button
         icon: "check-circle"
+        on_release: {}
     MDIconButton:
-        id: button
+        id: button1
         icon: "close-circle"
-    """.format(function, image_string, title_string, subtitle_string)
+        on_release: {}
+    """.format(function, image_string, title_string, subtitle_string, approve_function, del_function)
     return card
 
-def create_card_student(title, subtitle, img, function):
+def create_card_student(title, subtitle, img, function, add_function):
     image_string = "'"+img+"'"
     title_string = "'"+title+"'"
     subtitle_string = "'"+subtitle+"'"
@@ -128,5 +130,6 @@ def create_card_student(title, subtitle, img, function):
     MDIconButton:
         id: button
         icon: "check-circle"
-    """.format(function, image_string, title_string, subtitle_string)
+        on_release: {}
+    """.format(function, image_string, title_string, subtitle_string, add_function)
     return card

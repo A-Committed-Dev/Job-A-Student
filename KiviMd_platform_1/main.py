@@ -33,14 +33,45 @@ class CardItem(MDCard, RoundedRectangularElevationBehavior):
         close_connection(val[0])
         app.main_Screen.ids.screen_manager.get_screen("joblist").ids.content.clear_widgets()
         app.main_Screen.ids.screen_manager.get_screen("joblist").ids.content_view.clear_widgets()
-        app.main_Screen.populate_content(app.acoount_type, "joblist", app.acoount_type)
+        app.main_Screen.populate_joblist()
+
+    def add(self, idd):
+        try:
+            val = establish_connection()
+            # save gets username
+            database = get_from_jobs_by_jobid(val[1], idd)
+            database_userinfo = get_from_user_info(val[1], app.current_account)
+            insert_into_awaiting(val[1], database_userinfo[0][0], database_userinfo[0][1], database_userinfo[0][2], database[0][3], idd, app.current_account)
+            # closes connection
+            close_connection(val[0])
+            Mainapp.show_alert_box(Mainapp(), "Succesfully applied for job")
+        except:
+            Mainapp.show_alert_box(Mainapp(), "No Acount info")
+
+    def move(self, idd, status):
+        val = establish_connection()
+        # save gets username
+        database = get_from_awaiting_by_jobid(val[1], idd)
+        insert_into_reviewed(val[1], database[0][0], database[0][3], status, database[0][5])
+        insert_into_reviewed(val[1], database[0][0], database[0][3], status, app.current_account)
+        delete_from_awaiting(val[1], idd)
+        if status == 1:
+            delete_from_job(val[1], idd)
+            Mainapp.show_alert_box(Mainapp(), "Accepted application")
+            
+        if status == 0:
+            Mainapp.show_alert_box(Mainapp(), "Denied application")
+        # closes connection
+        close_connection(val[0])
+        app.main_Screen.ids.screen_manager.get_screen("awaiting").ids.content.clear_widgets()
+        app.main_Screen.populate_awaiting()
 
 
 class Screen_jobs(Screen):
     def on_enter(self, *args):
         app.main_Screen.ids.screen_manager.get_screen("joblist").ids.content_view.clear_widgets()
         app.main_Screen.ids.screen_manager.get_screen("joblist").ids.content.clear_widgets()
-        app.main_Screen.populate_content(app.acoount_type, "joblist", app.acoount_type)
+        app.main_Screen.populate_joblist()
 
 
 
@@ -93,7 +124,10 @@ class Screen_account(Screen):
 class Screen_waiting_student(Screen):
     pass
 class Screen_waiting_employer(Screen):
-    pass
+    def on_enter(self, *args):
+        app.main_Screen.ids.screen_manager.get_screen("awaiting").ids.content_view.clear_widgets()
+        app.main_Screen.ids.screen_manager.get_screen("awaiting").ids.content.clear_widgets()
+        app.main_Screen.populate_awaiting()
 class Screen_reviewed(Screen):
     pass
 
@@ -196,7 +230,7 @@ class Screen_main(Screen):
 
         if value == 0:
             x = Builder.load_string(create_card_student(
-                user_name,  user_subtitle, user_img, "root.test({}, {})".format(idd, screen_name_string)),
+                user_name,  user_subtitle, user_img, "root.test({}, {})".format(idd, screen_name_string),  "root.add({})".format(jobid)),
                                 filename="myrule.kv")
         if value == 1:
             x = Builder.load_string(create_card_employer_jobs(
@@ -204,7 +238,7 @@ class Screen_main(Screen):
                 filename="myrule.kv")
         if value == 2:
             x = Builder.load_string(create_card_employer_awaiting(
-                user_name, user_subtitle, user_img, "root.test({}, {})".format(idd, screen_name_string)),
+                user_name, user_subtitle, user_img, "root.test({}, {})".format(idd, screen_name_string), "root.move({},{})".format(jobid, 1), "root.move({},{})".format(jobid, 0)),
                 filename="myrule.kv")
 
         self.ids.screen_manager.get_screen(screen_name).ids.content.add_widget(CardItem())
@@ -240,55 +274,91 @@ class Screen_main(Screen):
         app.main_Screen.ids.screen_manager.get_screen("joblist").ids.content.clear_widgets()
 
         app.main_Screen.ids.screen_manager.get_screen("joblist").ids.content_view.clear_widgets()
-        self.populate_content(app.acoount_type, "joblist", app.acoount_type)
+        self.populate_joblist()
 
-    def populate_content(self, type, screen, card_type):
+    def populate_joblist(self):
+        try:
+            database = None
+            if app.acoount_type == 0:
+                # reads the database for account info and displays on gui
+                # opens database connection
+                val = establish_connection()
+                # save gets username
+                database = get_allfrom_jobs(val[1])
+                # closes connection
+                close_connection(val[0])
+                print(database)
 
-        if type == 0:
+            if app.acoount_type == 1:
+                # reads the database for account info and displays on gui
+                # opens database connection
+                val = establish_connection()
+                # save gets username
+                database = get_from_jobs(val[1], app.current_account)
+                # closes connection
+                close_connection(val[0])
+                print(database)
+
+            z = 0
+            for x in database:
+                print(x[1])
+                app.main_Screen.create_content_screens(z, "joblist", x[0], x[2], x[3], x[1])
+                app.main_Screen.render_cards(z, "joblist", app.acoount_type, x[0], x[3], x[2], x[4])
+                z +=1
+        except:
+            pass
+
+
+
+    def populate_awaiting(self):
+        try:
             # reads the database for account info and displays on gui
             # opens database connection
             val = establish_connection()
             # save gets username
-            database = get_allfrom_jobs(val[1])
+            database = get_from_awaiting(val[1], app.current_account)
+            print(database)
             # closes connection
             close_connection(val[0])
 
             z = 0
             for x in database:
                 print(x[1])
-                app.main_Screen.create_content_screens(z, screen, x[0], x[2], x[3], x[1])
-                app.main_Screen.render_cards(z, screen, app.acoount_type, x[0], x[3], x[2], x[4])
-                z +=1
-
-        elif type == 1:
-            # reads the database for account info and displays on gui
-            # opens database connection
-            val = establish_connection()
-            # save gets username
-            database = get_from_jobs(val[1], app.current_account)
-            # closes connection
-            close_connection(val[0])
-
-            z = 0
-            for x in database:
-                app.main_Screen.create_content_screens(z, screen, x[0], x[2], x[3], x[1])
-                app.main_Screen.render_cards(z, screen, card_type, x[0], x[3], x[2], x[4])
+                app.main_Screen.create_content_screens(z, "awaiting", x[0], x[2], x[3], x[1])
+                app.main_Screen.render_cards(z, "awaiting", 2, x[0], x[3], x[2], x[4])
                 z += 1
+        except:
+            pass
 
     def on_enter(self):
-        self.populate_content(app.acoount_type, "joblist",app.acoount_type)
-        #disables the add job button
+        #Creates screens for the toolbar.
+        app.main_Screen.ids.screen_manager.clear_widgets()
+        app.main_Screen.ids.screen_manager.add_widget(Screen_jobs(name="joblist"))
+        app.main_Screen.ids.screen_manager.add_widget(Screen_reviewed(name="reviewed"))
+        app.main_Screen.ids.screen_manager.add_widget(Screen_account(name="account"))
+
+
         if app.acoount_type == 0:
+            # disables the add job button
             app.main_Screen.ids.screen_manager.get_screen("joblist").ids.button.disabled = True
             app.main_Screen.ids.screen_manager.get_screen("joblist").ids.Textfield.disabled = True
 
-            app.main_Screen.ids.screen_manager.get_screen("awaiting").clear_widgets()
+            #loads student layout
+            Builder.load_file("layouts/waiting_student_layout.kv")
+            app.main_Screen.ids.screen_manager.add_widget(Screen_waiting_student(name="awaiting"))
+
 
 
         if app.acoount_type == 1:
+            # enable the add job button
             app.main_Screen.ids.screen_manager.get_screen("joblist").ids.button.disabled = False
             app.main_Screen.ids.screen_manager.get_screen("joblist").ids.Textfield.disabled = False
-            self.populate_content(app.acoount_type, "awaiting", 2)
+
+            # loads employer layout
+            Builder.load_file("layouts/waiting_employer_layout.kv")
+            app.main_Screen.ids.screen_manager.add_widget(Screen_waiting_employer(name="awaiting"))
+
+            self.populate_awaiting()
         pass
 
 
@@ -519,6 +589,18 @@ class Mainapp(MDApp):
     # this method is run first, here we put stuff like our theme and color choice.
     # we also put our screens and load the .kv files.
     def build(self):
+        # try creating database
+        try:
+            # opens database connection
+            val = establish_connection()
+            # creates database
+            create_tables(val[1])
+            # closes connection
+            close_connection(val[0])
+        except:
+            print("database already exists")
+
+
         # sets the color themes for the whole app.
         self.theme_cls.theme_style = "Light"
         self.theme_cls.primary_palette = "Orange"
@@ -538,16 +620,7 @@ class Mainapp(MDApp):
         self.sm.add_widget(Screen_signup(name="signup_screen"))
         self.sm.add_widget(Screen_student(name="student_main"))
 
-        #try creating database
-        try:
-            # opens database connection
-            val = establish_connection()
-            #creates database
-            create_tables(val[1])
-            # closes connection
-            close_connection(val[0])
-        except:
-            print("database already exists")
+
 
         # sets the start up screen
         self.sm.current = "login_screen"
@@ -611,11 +684,7 @@ class Mainapp(MDApp):
 
     # this method runs after build
     def on_start(self):
-        #Creates application screens.
-        self.main_Screen.ids.screen_manager.add_widget(Screen_jobs(name="joblist"))
-        self.main_Screen.ids.screen_manager.add_widget(Screen_waiting_employer(name="awaiting"))
-        self.main_Screen.ids.screen_manager.add_widget(Screen_reviewed(name="reviewed"))
-        self.main_Screen.ids.screen_manager.add_widget(Screen_account(name="account"))
+
 
         # this runs a schedueld task, to force the windows size.
         # all the time
