@@ -147,8 +147,9 @@ class Screen_waiting_student(Screen):
                 new_list = []
                 new_list.append(x[0])
                 new_list.append(x[3])
-                new_list.append(x[4])
                 new_list.append("Pending...")
+                new_list.append(x[4])
+                new_list.append(("delete-circle", [0, 0, 0, 1], ""))
                 new_database.append(new_list)
 
 
@@ -166,10 +167,11 @@ class Screen_waiting_student(Screen):
             rows_num=1000,
             use_pagination=False,
             column_data=[
-                ("name", self.width / 20),
-                ("Job", self.width/20),
-                ("id", self.width / 20),
-                ("Status", self.width/20),
+                ("Employer", self.width / 25),
+                ("Job", self.width/25),
+                ("Status", self.width/25),
+                ("ID", self.width / 25),
+                ("Delete", self.width / 25),
             ],
             row_data= new_database)
 
@@ -185,51 +187,31 @@ class Screen_waiting_student(Screen):
     # Method that gets the instance of the row pressed
     def row_presses(self, instance_table, instance_row):
         selected_row_name = instance_row.text
-        print(len(self.table.row_data))
-        print(instance_row.index)
-        for x in range(0, )
-
-        # if instance_row.index == 0:
-        #     print(self.table.row_data[instance_row.index][2])
-        # else:
-        #     print(self.table.row_data[instance_row.index/2][2])
 
 
-
-        # Deletes the previous label that showed selected row
-        if len(self.children) > 2:
-            self.remove_widget(self.children[0])
-        else:
-            pass
-
-        # BoxLayout to house buttons and label
-        buttons = MDBoxLayout(
-            pos_hint={"center_x": 0.537, "center_y": 0.55},
-        )
-
-        # Delete button
-        buttons.add_widget(
-            MDIconButton(
-                icon="trash-can-outline",
-                on_release=lambda x: Mainapp.show_alert_box(Mainapp(), "Do you whish to delete?")
-            )
-        )
+        if len(self.table.row_data) != 0:
+            z = 4
+            new_list = []
+            for x in range(0, len(self.table.row_data)):
+                new_list.append(z)
+                z += 5
+            if instance_row.index in new_list:
+                self.remove(self.table.row_data[new_list.index(instance_row.index)][3])
 
 
 
-        if instance_row.index == 0:
-            # "Selected: " label
-            buttons.add_widget(
-                MDLabel(
-                    text=f"Selected: {selected_row_name}",
-                    pos_hint={"center_y": 0.04}
-                )
-            )
-        self.add_widget(buttons)
 
+    def remove(self, idd):
+        # reads the database for account info and displays on gui
+        # opens database connection
+        val = establish_connection()
+        # save gets username
+        database = delete_from_awaiting(val[1], idd)
+        # closes connection
+        close_connection(val[0])
+        self.clear_widgets()
+        self.create_table()
 
-    def remove(self, selected_row):
-        pass
 
 
 class Screen_waiting_employer(Screen):
