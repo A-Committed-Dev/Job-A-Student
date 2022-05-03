@@ -61,7 +61,7 @@
                         size: "48dp", "48dp"
                         group: "account_type"
                         on_press:
-                            if self.active: root.set_type("student")
+                            if self.active: root.set_type(0)
                             if self.active == False: root.set_type(None)
 
                 MDBoxLayout:
@@ -80,7 +80,7 @@
                         size_hint: None,None
                         group: "account_type"
                         on_press:
-                            if self.active: root.set_type("employer")
+                            if self.active: root.set_type(1)
                             if self.active == False: root.set_type(None)
 
             MDBoxLayout:

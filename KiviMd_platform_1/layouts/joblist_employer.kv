@@ -31,7 +31,12 @@
                     id: button
                     icon: "plus"
                     pos_hint: {"center_x": .95, "center_y": .97}
-
+                    on_release: app.main_Screen.create_job()
+                MDTextField:
+                    id: Textfield
+                    helper_text: "job description"
+                    size_hint_x: .3
+                    pos_hint: {"center_x": .75, "center_y": .9825}
 
 
             Splitter:

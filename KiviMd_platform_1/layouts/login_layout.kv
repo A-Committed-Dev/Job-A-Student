@@ -63,7 +63,7 @@
                         size: "48dp", "48dp"
                         group: "account_type"
                         on_press:
-                            if self.active: root.set_type("student")
+                            if self.active: root.set_type(0)
                             if self.active == False: root.set_type(None)
 
 
@@ -83,7 +83,7 @@
                         size_hint: None,None
                         group: "account_type"
                         on_press:
-                            if self.active: root.set_type("employer")
+                            if self.active: root.set_type(1)
                             if self.active == False: root.set_type(None)
 
             MDBoxLayout:
@@ -99,7 +99,8 @@
                     hint_text: "Username"
                     helper_text: "This field is required*"
                     helper_text_mode: "on_focus"
-                    text_color: utils.get_color_from_hex('#2b2b2a')
+
+                    text_color_focus: 0,0,0
                     write_tab: False
                     size_hint: "48dp", "68dp"
 
@@ -116,7 +117,7 @@
                     hint_text: "Password"
                     helper_text: "This field is required*"
                     helper_text_mode: "on_focus"
-                    text_color: utils.get_color_from_hex('#2b2b2a')
+                    text_color_focus: 0,0,0
                     multiline: False
                     on_text_validate:  root.request_login(root.get_credentials()[0],root.get_credentials()[1], root.get_type())
                     write_tab: False

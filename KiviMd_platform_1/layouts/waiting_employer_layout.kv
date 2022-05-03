@@ -1,8 +1,6 @@
 #:import utils kivy.utils
 #:import LoginButton custom_classes
-
-
-<Screen_jobs@Screen>:
+<Screen_waiting_employer@Screen>:
     Screen:
         MDBoxLayout:
             FloatLayout:
@@ -26,12 +24,6 @@
                         padding: "12dp"
                         spacing: "12dp"
                         adaptive_height: True
-
-                MDIconButton:
-                    id: button
-                    icon: "plus"
-                    pos_hint: {"center_x": .95, "center_y": .97}
-
 
 
             Splitter:
