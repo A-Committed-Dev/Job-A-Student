@@ -3,7 +3,15 @@
   <component name="ChangeListManager">
     <list default="true" id="3f3e7451-cd29-48d8-b4ac-31db97fc3899" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/KiviMd_platform_1/Untitled.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/KiviMd_platform_1/database.py" beforeDir="false" afterPath="$PROJECT_DIR$/KiviMd_platform_1/database.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/KiviMd_platform_1/employer_view.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/KiviMd_platform_1/functions.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/KiviMd_platform_1/icon.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/KiviMd_platform_1/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/KiviMd_platform_1/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/KiviMd_platform_1/student_views.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/KiviMd_platform_1/test2.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/KiviMd_platform_1/users.db" beforeDir="false" afterPath="$PROJECT_DIR$/KiviMd_platform_1/users.db" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -161,9 +169,9 @@
     <recent_temporary>
       <list>
         <item itemvalue="Python.main" />
+        <item itemvalue="Python.database" />
         <item itemvalue="Python.icon" />
         <item itemvalue="Python.student_views" />
-        <item itemvalue="Python.database" />
         <item itemvalue="Python.test2" />
       </list>
     </recent_temporary>
@@ -207,22 +215,11 @@
     </option>
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/KiviMd_platform_1/student_views.py</url>
-          <line>154</line>
-          <option name="timeStamp" value="1" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
-  </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/Job_A_Student$test2.coverage" NAME="test2 Coverage Results" MODIFIED="1651525868891" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/KiviMd_platform_1" />
     <SUITE FILE_PATH="coverage/Job_A_Student$template_generator.coverage" NAME="template_generator Coverage Results" MODIFIED="1651436591063" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/KiviMd_platform_1" />
-    <SUITE FILE_PATH="coverage/Job_A_Student$database.coverage" NAME="database Coverage Results" MODIFIED="1651541927072" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/KiviMd_platform_1" />
-    <SUITE FILE_PATH="coverage/Job_A_Student$main.coverage" NAME="main Coverage Results" MODIFIED="1651587900230" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/KiviMd_platform_1" />
+    <SUITE FILE_PATH="coverage/Job_A_Student$database.coverage" NAME="database Coverage Results" MODIFIED="1651689005940" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/KiviMd_platform_1" />
+    <SUITE FILE_PATH="coverage/Job_A_Student$main.coverage" NAME="main Coverage Results" MODIFIED="1651689255645" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/KiviMd_platform_1" />
     <SUITE FILE_PATH="coverage/Job_A_Student$icon.coverage" NAME="icon Coverage Results" MODIFIED="1651586358953" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/KiviMd_platform_1" />
     <SUITE FILE_PATH="coverage/Job_A_Student$test3.coverage" NAME="test3 Coverage Results" MODIFIED="1651437752139" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/KiviMd_platform_1" />
   </component>

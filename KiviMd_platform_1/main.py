@@ -26,100 +26,146 @@ from template_generator import *
 # makes kivy use mouse input and disables multitouch
 Config.set('input', 'mouse', 'mouse,multitouch_on_demand')
 
+#this class is the custom cards that contains jobs.
 class CardItem(MDCard, RoundedRectangularElevationBehavior):
-    def test(self, idd, screen_name):
-        app.main_Screen.test(idd, screen_name)
+    #this method calls the card change screen method from the main screen.
+    def card_change_screen(self, idd, screen_name):
+        app.main_Screen.card_change_screen(idd, screen_name)
 
+    #this method removes a card from the joblist
     def remove(self, idd):
-        # opens database connection
-        val = establish_connection()
-        # save gets username
-        delete_from_job(val[1], idd)
-        # closes connection
-        close_connection(val[0])
-        app.main_Screen.ids.screen_manager.get_screen("joblist").ids.content.clear_widgets()
-        app.main_Screen.ids.screen_manager.get_screen("joblist").ids.content_view.clear_widgets()
-        app.main_Screen.populate_joblist()
+        try:
+            # opens database connection
+            val = establish_connection()
+            # removes job by jobidd from jobs table
+            delete_from_job(val[1], idd)
+            # closes connection
+            close_connection(val[0])
 
+            # removes cards, and content screens.
+            app.main_Screen.ids.screen_manager.get_screen("joblist").ids.content_view.clear_widgets()
+            app.main_Screen.ids.screen_manager.get_screen("joblist").ids.content.clear_widgets()
+            # recreates cards and content screens.
+            app.main_Screen.populate_joblist()
+        except:
+            pass
+
+    #this method lets students apply to a job
     def add(self, idd):
         try:
             val = establish_connection()
-            # save gets username
+            # gets the jobname from id
             database = get_from_jobs_by_jobid(val[1], idd)
+            #gets the students information
             database_userinfo = get_from_user_info(val[1], app.current_account)
-            insert_into_awaiting(val[1], database_userinfo[0][0], database_userinfo[0][1], database_userinfo[0][2], database[0][3], idd, app.current_account)
+            #inserts the job name from jobdatbase,
+            # and the students information from user info into the awawiting database.
+            insert_into_awaiting(val[1],
+                                 database_userinfo[0][0],
+                                 database_userinfo[0][1],
+                                 database_userinfo[0][2],
+                                 database[0][3],
+                                 idd, app.current_account)
             # closes connection
             close_connection(val[0])
             Mainapp.show_alert_box(Mainapp(), "Succesfully applied for job")
         except:
             Mainapp.show_alert_box(Mainapp(), "No Acount info")
 
+    # this method moves data from awaiting into reviewd
     def move(self, idd, status):
-        val = establish_connection()
-        # save gets username
-        database = get_from_awaiting_by_jobid(val[1], idd)
-        insert_into_reviewed(val[1], database[0][0], database[0][3], status, database[0][5])
-        insert_into_reviewed(val[1], database[0][0], database[0][3], status, app.current_account)
-        delete_from_awaiting(val[1], idd)
-        if status == 1:
-            delete_from_job(val[1], idd)
-            Mainapp.show_alert_box(Mainapp(), "Accepted application")
+        try:
+            val = establish_connection()
+            # gets data from awating by jobid
+            database = get_from_awaiting_by_jobid(val[1], idd)
+            database_userinfo = get_from_user_info(val[1], app.current_account)
 
-        if status == 0:
-            Mainapp.show_alert_box(Mainapp(), "Denied application")
-        # closes connection
-        close_connection(val[0])
-        app.main_Screen.ids.screen_manager.get_screen("awaiting").ids.content.clear_widgets()
-        app.main_Screen.populate_awaiting()
+            # inserts into employer rewviewed, student name,jobname, and stutus
+            insert_into_reviewed(val[1], database_userinfo[0][0], database[0][3], status, database[0][5])
+            # inserts into student rewviewed, employername,jobname, and stutus
+            insert_into_reviewed(val[1], database[0][0], database[0][3], status, app.current_account)
+            #removes the student from awaiting
+            delete_from_awaiting(val[1], idd)
+            #checks if student have been accepted
+            if status == 1:
+                #removes the job if accepted
+                delete_from_job(val[1], idd)
+                Mainapp.show_alert_box(Mainapp(), "Accepted application")
 
+            #checks if student have been denied
+            if status == 0:
+                Mainapp.show_alert_box(Mainapp(), "Denied application")
+            # closes connection
+            close_connection(val[0])
+            #removes cards, and content screens.
+            app.main_Screen.ids.screen_manager.get_screen("awaiting").ids.content.clear_widgets()
+            app.main_Screen.ids.screen_manager.get_screen("awaiting").ids.content_view.clear_widgets()
+            # recreates cards and content screens.
+            app.main_Screen.populate_awaiting()
+        except:
+            pass
 
+#this class is for the jobs screen.
 class Screen_jobs(Screen):
+    #this runs when job screen is entered
     def on_enter(self, *args):
+        #removes cards, and content screens.
         app.main_Screen.ids.screen_manager.get_screen("joblist").ids.content_view.clear_widgets()
         app.main_Screen.ids.screen_manager.get_screen("joblist").ids.content.clear_widgets()
+        #recreates cards and content screens.
         app.main_Screen.populate_joblist()
 
 
 
 
 
-
+#this class stores methods relevant to the account screen.
 class Screen_account(Screen):
+    #this method borrows tkinter file picker dialog to get file path
     def pick_file(self):
         Tk().withdraw()  # we don't want a full GUI, so keep the root window from appearing
         filename = askopenfilename()  # show an "Open" dialog box and return the path to the selected file
+        #sets image on screen to file path
         self.ids.img.source = filename
 
+    #this method save account details.
     def save_account(self):
-        if self.password_length(self.ids.desc.text) > 600:
-            print("sur")
-            #TODO bliv sur
-        else:
-            # opens database connection
-            val = establish_connection()
-            # save gets username
-            database = insert_to_user_info(val[1], self.ids.name.text, self.ids.desc.text, self.ids.img.source, app.current_account)
-            # closes connection
-            close_connection(val[0])
+        try:
+            #checks the length of the desc
+            if self.password_length(self.ids.desc.text) > 600:
+                #plays sound
+                sound = SoundLoader.load("sfx/Error.mp3")
+                sound.play()
+                Mainapp.show_alert_box(Mainapp(), "desc too long")
+            else:
+                # opens database connection
+                val = establish_connection()
+                # inserts values into user info table
+                database = insert_to_user_info(val[1], self.ids.name.text, self.ids.desc.text, self.ids.img.source, app.current_account)
+                # closes connection
+                close_connection(val[0])
+        except:
+            pass
 
-
+    #this method is run when the screen is entered
     def on_enter(self, *args):
         try:
             #reads the database for account info and displays on gui
             # opens database connection
             val = establish_connection()
-            # save gets username
+            # gets user information from database
             database = get_from_user_info(val[1], app.current_account)
             # closes connection
             close_connection(val[0])
 
+            #sets the fields on the screen to the values from the database
             self.ids.name.text = database[0][0]
             self.ids.desc.text = database[0][1]
             self.ids.img.source = database[0][2]
         except:
             pass
 
-
+    #this method gets the char length of a string
     def password_length(self, password):
         # using a list comprehension we can split
         # string at all chars
@@ -127,29 +173,35 @@ class Screen_account(Screen):
         # returns length of list
         return len(char_lsit)
 
+#this calss is the student awiaiting screen, this is where the user can see the applied jobs.
+#and delete them
 class Screen_waiting_student(Screen):
     index = 0
-    dialog = None
 
+    #this method creates table with values from awaiting database
     def create_table(self):
 
         # reads the database for account info and displays on gui
         # opens database connection
         val = establish_connection()
-        # save gets username
+        # jobs from awaiting by user id
         database = get_from_awaiting_by_userid(val[1], app.current_account)
 
+        #database for changed values
         new_database = []
         for z in database:
+            #get job information from, jobid we got from the awaiting database
             database_jobs = get_from_jobs_by_jobid(val[1], z[4])
 
             for x in database_jobs:
-                new_list = []
+                new_list = []#container for values
                 new_list.append(x[0])
                 new_list.append(x[3])
                 new_list.append("Pending...")
                 new_list.append(x[4])
+                #delet icon to the end of the table, this is the button we need to hit.
                 new_list.append(("delete-circle", [0, 0, 0, 1], ""))
+                #adds container to list
                 new_database.append(new_list)
 
 
@@ -186,67 +238,91 @@ class Screen_waiting_student(Screen):
 
     # Method that gets the instance of the row pressed
     def row_presses(self, instance_table, instance_row):
-        selected_row_name = instance_row.text
+        try:
+            #checks if table is not empty
+            if len(self.table.row_data) != 0:
+                z = 4 # start index of first button
+                new_list = [] #container for values
+                #creates index for buttons depinding on the amount of rows
+                for x in range(0, len(self.table.row_data)):
+                    #adds index to list
+                    new_list.append(z)
+                    #gets next index
+                    z += 5
+                #checks if pressed row is in the list
+                if instance_row.index in new_list:
+                    #removes row from table by getting the button from the index list
+                    # and fetches the id from the table at index 3
+                    self.remove(self.table.row_data[new_list.index(instance_row.index)][3])
+        except:
+            pass
 
 
-        if len(self.table.row_data) != 0:
-            z = 4
-            new_list = []
-            for x in range(0, len(self.table.row_data)):
-                new_list.append(z)
-                z += 5
-            if instance_row.index in new_list:
-                self.remove(self.table.row_data[new_list.index(instance_row.index)][3])
 
-
-
-
+    #method to remove element from table
     def remove(self, idd):
-        # reads the database for account info and displays on gui
-        # opens database connection
-        val = establish_connection()
-        # save gets username
-        database = delete_from_awaiting(val[1], idd)
-        # closes connection
-        close_connection(val[0])
-        self.clear_widgets()
-        self.create_table()
+        try:
+            # reads the database for account info and displays on gui
+            # opens database connection
+            val = establish_connection()
+            # removes id from database
+            database = delete_from_awaiting(val[1], idd)
+            # closes connection
+            close_connection(val[0])
+            #all data from table
+            self.clear_widgets()
+            #creates new table
+            self.create_table()
+        except:
+            pass
 
 
-
+#screen for employer to sort applied students
 class Screen_waiting_employer(Screen):
+    #when screen is entered loads cards
     def on_enter(self, *args):
+        #clears card content view
         app.main_Screen.ids.screen_manager.get_screen("awaiting").ids.content_view.clear_widgets()
+        # clears card from screen
         app.main_Screen.ids.screen_manager.get_screen("awaiting").ids.content.clear_widgets()
+        #recreates cards
         app.main_Screen.populate_awaiting()
 
-
+#screen that stores the reviewed table.
+#houses function to create table from database
 class Screen_reviewed(Screen):
     def create_table(self):
         try:
             # reads the database for account info and displays on gui
             # opens database connection
             val = establish_connection()
-            # save gets username
+            # gets from the reviewed table by username
             database = get_from_reviewed(val[1], app.current_account)
             # closes connection
             close_connection(val[0])
+
+            #creates empty list to store a new database
             new_database = []
             for x in database:
+                #container for data from the database
                 new_list = []
+
+                #gets student or employer name
                 new_list.append(x[0])
+
+                #gets jobname
                 new_list.append(x[1])
+                #checks status if 1 accepted if 0 denied
                 if x[2] == 1:
                     new_list.append(("checkbox-marked-circle", [0, 100, 0, 1], "Accepted"))
+                # checks status if 1 accepted if 0 denied
                 if x[2] == 0:
                     new_list.append(("close-circle", [50, 0, 0, 1], "Denied"))
 
+                #adds container to database
                 new_database.append(new_list)
-                print(new_database)
         except:
             pass
-
-
 
         # Initialization of datatable
         self.table = MDDataTable(
@@ -262,30 +338,34 @@ class Screen_reviewed(Screen):
             ],
             row_data=new_database
         )
-
         self.add_widget(self.table)
 
     # Creates datatable when the screen is active
     def on_enter(self):
         self.create_table()
 
+
+#this class is the main screen which is accesed after loggin in.
+#this i the hub for the methods for controlling the creation of cards
 class Screen_main(Screen):
 
-
+    #gets the active button in the toolbar
+    #changes screen to match name
     def rail_switch_screen(self, instance_navigation_rail, instance_navigation_rail_item):
-
         self.ids.screen_manager.current = (
             instance_navigation_rail_item.text.lower()
         )
 
     def create_content_screens(self, idd, screen_name, user_name, user_img, user_job, user_desc):
+        #incases values as string
         idd_string = "'" + str(idd) + "'"
         user_name_string = "'" + user_name + "'"
         user_img_string = "'" + user_img + "'"
         user_job_string = "'" + user_job + "'"
         user_desc_string = "'" + user_desc + "'"
 
-        button = Builder.load_string("""Screen:
+        #loads formatted template to builder
+        content = Builder.load_string("""Screen:
         MDBoxLayout:
                 line_color: utils.get_color_from_hex('#ff9800')
                 line_width: 1.4
@@ -341,82 +421,132 @@ class Screen_main(Screen):
                                 multiline: True
                                 disabled: True
                                 size: 0.5,1 
-               """.format(user_name_string, user_job_string, user_img_string, user_desc_string))
+               """.format(user_name_string,
+                          user_job_string,
+                          user_img_string,
+                          user_desc_string)) #formats the template with paramters
 
-        #checks if screen already exists
         try:
-            if self.ids.screen_manager.get_screen(screen_name).ids.content_view.get_screen(idd_string):
-                self.ids.screen_manager.get_screen(screen_name).ids.content_view.get_screen(idd_string).add_widget(button)
+            # checks if screen already exists
+            if self.ids.screen_manager.get_screen(screen_name)\
+                    .ids.content_view.get_screen(idd_string):
+                #adds content to exsisting screen
+                self.ids.screen_manager.get_screen(screen_name)\
+                    .ids.content_view.get_screen(idd_string).add_widget(content)
                 return
         except:
             pass
         try:
+            #creates a screen with id from args
             new_screen = Screen(name=idd_string)
-            new_screen.add_widget(button)
+            # adds content to new screen
+            new_screen.add_widget(content)
         except:
             pass
-        self.ids.screen_manager.get_screen(screen_name).ids.content_view.add_widget(new_screen)
+        #adds the new screen to the card content view
+        self.ids.screen_manager.get_screen(screen_name)\
+            .ids.content_view.add_widget(new_screen)
 
 
-
-    def test(self, idd, screen_name):
+    #this method changes the card content screen
+    def card_change_screen(self, idd, screen_name):
         idd_string = "'" + str(idd) + "'"
+        #sets the contentscreen by card
         self.ids.screen_manager.get_screen(screen_name).ids.content_view.current = idd_string
 
+    #this method renders cards and adds them to the screen
     def render_cards(self, idd, screen_name, value, user_name, user_subtitle, user_img, jobid):
         screen_name_string = "'" + str(screen_name) + "'"
+        try:
+            #cecks for the wanted type of card by the type paramter
+            if value == 0:
+                # loads card to builder from paramters
+                x = Builder.load_string(create_card_student(
+                    user_name,
+                    user_subtitle,
+                    user_img,
+                    # function need to be passed as a string so we use format to change args
+                    "root.card_change_screen({}, {})".format(idd, screen_name_string),
+                    "root.add({})".format(jobid)),
+                    filename="cards.kv")
+            # cecks for the wanted type of card by the type paramter
+            if value == 1:
+                # loads card to builder from paramters
+                x = Builder.load_string(create_card_employer_jobs(
+                    user_name,
+                    user_subtitle,
+                    user_img,
+                    #function need to be passed as a string so we use format to change args
+                    "root.card_change_screen({}, {})".format(idd, screen_name_string),
+                    "root.remove({})".format(jobid)),
+                    filename="cards.kv")
+            # cecks for the wanted type of card by the type paramter
+            if value == 2:
+                #loads card to builder from paramters
+                x = Builder.load_string(create_card_employer_awaiting(
+                    user_name,
+                    user_subtitle,
+                    user_img,
+                    # function need to be passed as a string so we use format to change args
+                    "root.card_change_screen({}, {})".format(idd, screen_name_string),
+                    "root.move({},{})".format(jobid, 1),
+                    "root.move({},{})".format(jobid, 0)),
+                    filename="cards.kv")
 
-        if value == 0:
-            x = Builder.load_string(create_card_student(
-                user_name,  user_subtitle, user_img, "root.test({}, {})".format(idd, screen_name_string),  "root.add({})".format(jobid)),
-                                filename="myrule.kv")
-        if value == 1:
-            x = Builder.load_string(create_card_employer_jobs(
-                user_name, user_subtitle, user_img, "root.test({}, {})".format(idd, screen_name_string), "root.remove({})".format(jobid)),
-                filename="myrule.kv")
-        if value == 2:
-            x = Builder.load_string(create_card_employer_awaiting(
-                user_name, user_subtitle, user_img, "root.test({}, {})".format(idd, screen_name_string), "root.move({},{})".format(jobid, 1), "root.move({},{})".format(jobid, 0)),
-                filename="myrule.kv")
+            #add card to screen
+            self.ids.screen_manager.get_screen(screen_name)\
+                .ids.content.add_widget(CardItem())
+            #unload card from the builder
+            x = Builder.unload_file("cards.kv")
+        except:
+            pass
 
-        self.ids.screen_manager.get_screen(screen_name).ids.content.add_widget(CardItem())
-        x = Builder.unload_file("myrule.kv")
-
-
+    # this method creates, a new job. and adds it to the database
+    # and updates the screen
     def create_job(self):
-        #gets the description from textfield
+        #gets the job description from textfield
         jobname = app.main_Screen.ids.screen_manager.get_screen("joblist").ids.Textfield.text
+
+        #checks if the textfield is empty
         if jobname == "":
             Mainapp.show_alert_box(Mainapp(), "Need a job title")
             return
 
-        # reads the database for account info and displays on gui
-        # opens database connection
-        val = establish_connection()
-        # save gets username
-        database = get_from_user_info(val[1], app.current_account)
-        if len(database) != 0:
-            insert_into_jobs(val[1],database[0][0], database[0][1], database[0][2], jobname, app.current_account)
-        else:
-            Mainapp.show_alert_box(Mainapp(), "No account info")
+        try:
+            # reads the database for account info and displays on gui
+            # opens database connection
+            val = establish_connection()
+            # gets user information
+            database = get_from_user_info(val[1], app.current_account)
+            #checcks if database is not empty
+            #if empty ask to create info for database.
+            if len(database) != 0:
+                insert_into_jobs(val[1],database[0][0], database[0][1], database[0][2], jobname, app.current_account)
+            else:
+                Mainapp.show_alert_box(Mainapp(), "No account info")
+                close_connection(val[0])
+                return
+            # closes connection
             close_connection(val[0])
-            return
-        # closes connection
-        close_connection(val[0])
+        except:
+            pass
 
-
-
+        #shows pop up with messeage
         Mainapp.show_alert_box(Mainapp(), "succesfully created a job")
-
+        #clears the text field and screen and cards
         app.main_Screen.ids.screen_manager.get_screen("joblist").ids.Textfield.text = ""
         app.main_Screen.ids.screen_manager.get_screen("joblist").ids.content.clear_widgets()
-
+        #clears content views
         app.main_Screen.ids.screen_manager.get_screen("joblist").ids.content_view.clear_widgets()
+        #recreate the cards
         self.populate_joblist()
 
+
+    # this function loads data from the job database.
+    # and create cards on the job screen.
     def populate_joblist(self):
         try:
-            database = None
+
             if app.acoount_type == 0:
                 # reads the database for account info and displays on gui
                 # opens database connection
@@ -425,7 +555,7 @@ class Screen_main(Screen):
                 database = get_allfrom_jobs(val[1])
                 # closes connection
                 close_connection(val[0])
-                print(database)
+
 
             if app.acoount_type == 1:
                 # reads the database for account info and displays on gui
@@ -435,11 +565,11 @@ class Screen_main(Screen):
                 database = get_from_jobs(val[1], app.current_account)
                 # closes connection
                 close_connection(val[0])
-                print(database)
+            print(database)
 
-            z = 0
+            z = 0 # id for screens
+            # iterates everything from database
             for x in database:
-                print(x[1])
                 app.main_Screen.create_content_screens(z, "joblist", x[0], x[2], x[3], x[1])
                 app.main_Screen.render_cards(z, "joblist", app.acoount_type, x[0], x[3], x[2], x[4])
                 z +=1
@@ -447,7 +577,8 @@ class Screen_main(Screen):
             pass
 
 
-
+    #this function loads data from the awaiting database for the employer.
+    #and create cards on the awaiting screen.
     def populate_awaiting(self):
         try:
             # reads the database for account info and displays on gui
@@ -459,15 +590,18 @@ class Screen_main(Screen):
             # closes connection
             close_connection(val[0])
 
-            z = 0
+            z = 0 # id for screens
+            #iterates everything from database
             for x in database:
-                print(x[1])
-                app.main_Screen.create_content_screens(z, "awaiting", x[0], x[2], x[3], x[1])
-                app.main_Screen.render_cards(z, "awaiting", 2, x[0], x[3], x[2], x[4])
+                print(x[0])
+                app.main_Screen.create_content_screens(z, "awaiting", x[0][0], x[0][2], x[0][3], x[0][1])
+                app.main_Screen.render_cards(z, "awaiting", 2, x[0][0], x[0][3], x[0][2], x[0][4])
                 z += 1
         except:
             pass
 
+
+    #this method is loaded when you enter the main screen after login
     def on_enter(self):
         #Creates screens for the toolbar.
         app.main_Screen.ids.screen_manager.clear_widgets()
@@ -475,7 +609,7 @@ class Screen_main(Screen):
         app.main_Screen.ids.screen_manager.add_widget(Screen_reviewed(name="reviewed"))
         app.main_Screen.ids.screen_manager.add_widget(Screen_account(name="account"))
 
-
+        # checks if you are a student
         if app.acoount_type == 0:
             # disables the add job button
             app.main_Screen.ids.screen_manager.get_screen("joblist").ids.button.disabled = True
@@ -486,7 +620,7 @@ class Screen_main(Screen):
             app.main_Screen.ids.screen_manager.add_widget(Screen_waiting_student(name="awaiting"))
 
 
-
+        # checks if you are an employer
         if app.acoount_type == 1:
             # enable the add job button
             app.main_Screen.ids.screen_manager.get_screen("joblist").ids.button.disabled = False
@@ -496,8 +630,9 @@ class Screen_main(Screen):
             Builder.load_file("layouts/waiting_employer_layout.kv")
             app.main_Screen.ids.screen_manager.add_widget(Screen_waiting_employer(name="awaiting"))
 
+            #renders cards for employer
             self.populate_awaiting()
-        pass
+
 
 
 
@@ -523,18 +658,19 @@ class Screen_login(Screen):
         return self.type
 
     # this method reqeust a login to the app.
-    # TO DO: ADD DATABASE FOR LOGIN MANGEMENT.
     def request_login(self, username, password, type):
-        # this imtates a sql database at the moment
 
-        # opens database connection
-        val = establish_connection()
-        # save gets username
-        database = get_from_login(val[1], username)
-        # closes connection
-        close_connection(val[0])
+        try:
+            # opens database connection
+            val = establish_connection()
+            # save gets username
+            database = get_from_login(val[1], username)
+            # closes connection
+            close_connection(val[0])
+        except:
+            pass
 
-
+        #checks if textfields is empty
         if username == "" or password == "":
             sound = SoundLoader.load("sfx/Error.mp3")
             sound.play()
@@ -542,25 +678,30 @@ class Screen_login(Screen):
             self.clear_fields()
             return False
 
-        # checks if all credentials match database and returns true
-        if len(database) != 0:
-            if username == database[0][0] and password == database[0][1] and type == database[0][2]:
-                app.change_screen("main")
-                self.clear_fields()
+        try:
+            #makes sure that database isnt empty
+            if len(database) != 0:
+                # checks if all credentials match database and returns true
+                if username == database[0][0] and password == database[0][1] and type == database[0][2]:
+                    app.change_screen("main")
+                    self.clear_fields()
 
-                #sets account varibles
-                app.current_account = username
-                app.acoount_type = type
+                    #sets account varibles
+                    app.current_account = username
+                    app.acoount_type = type
 
-                return True
-        else:
-            # if not
-            # clears fields. plays angry sound, and shows an alert box, last function returns false
-            self.clear_fields()
-            sound = SoundLoader.load("sfx/Error.mp3")
-            sound.play()
-            Mainapp.show_alert_box(Mainapp(), "You did something wrong...")
-            return False
+                    return True
+
+                else:
+                    # if not
+                    # clears fields. plays angry sound, and shows an alert box, last function returns false
+                    self.clear_fields()
+                    sound = SoundLoader.load("sfx/Error.mp3")
+                    sound.play()
+                    Mainapp.show_alert_box(Mainapp(), "You did something wrong...")
+                    return False
+        except:
+            pass
 
     # this method clears all text fields by setting
     # the value to an empty string
@@ -596,7 +737,7 @@ class Screen_signup(Screen):
 
     # this method request a signup to the app.
     # TO DO: make a sql database for users.
-    def request_signup(self, username, password,rpassword,  type):
+    def request_signup(self, username, password, rpassword,  type):
         # loads the sound error.mp3 as variable sound
         sound = SoundLoader.load("sfx/Error.mp3")
 
@@ -697,8 +838,7 @@ class Screen_signup(Screen):
         self.ids.Urepeat.text = ""
 
 
-class Screen_student(Screen):
-    type = "student"
+
 
 
 
@@ -756,7 +896,6 @@ class Mainapp(MDApp):
         self.sm.add_widget(self.main_Screen)
         self.sm.add_widget(Screen_login(name="login_screen"))
         self.sm.add_widget(Screen_signup(name="signup_screen"))
-        self.sm.add_widget(Screen_student(name="student_main"))
 
 
 
@@ -809,12 +948,10 @@ class Mainapp(MDApp):
     # this method forces the window size to be the size of,
     # width and height parameter.
     def force_window(self, width, height, *largs):
-        # creates a list from the windows.size which returns tuple.
-        newlist = [x for x in Window.size]
 
         # checks if either width or height of window
         # is larger than the parameters
-        if width > newlist[0] or height > newlist[1]:
+        if width > Window.size[0] or height > Window.size[1]:
             # if forces window size to paramters
             Window.size = (width, height)
             # shows alertbox
@@ -822,8 +959,8 @@ class Mainapp(MDApp):
 
     # this method runs after build
     def on_start(self):
-
-
+        #maximizes the window
+        Window.maximize()
         # this runs a schedueld task, to force the windows size.
         # all the time
         Clock.schedule_interval(partial(self.force_window, 800, 600), 0)
